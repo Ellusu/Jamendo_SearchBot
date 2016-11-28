@@ -21,8 +21,7 @@
         'il bot è realizzato da @matteoenna'
     );
     
-    $benvenuto=implode(chr(10),$bvn);
-    
+    $benvenuto=implode(chr(10),$bvn);    
     
     $message_text = $update["message"]["text"];
         
@@ -65,18 +64,13 @@
             file_get_contents($sendto);
             die;
         }
-        $id = 'https://api.jamendo.com/v3.0/oauth/authorize?client_id='.CLIENT_ID_J;
-        $id = 'https://api.jamendo.com/v3.0/albums/?client_id='.CLIENT_ID_J.'&format=json&search='.$message_text;
         $url_s = 'https://api.jamendo.com/v3.0/tracks/?client_id='.CLIENT_ID_J.'&format=json&search='.$message_text;
-        $url_i = 'https://api.jamendo.com/v3.0/tracks/?client_id='.CLIENT_ID_J.'&format=json&id='.$message_text;
         
         $result = file_get_contents($url_s);
         $update = json_decode($result, true);
         
         $res = $update['results'];
-            
-        var_dump($res);
-            
+                        
         $acapo=chr(10);
         
         $i = 0;
