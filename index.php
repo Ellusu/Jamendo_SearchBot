@@ -40,7 +40,41 @@
         $benvenuto .=chr(10).'invia un messaggio con il contenuto che vuoi ricercare.';
         $sendto =API_URL."sendmessage?chat_id=".$chatID."&text=".urlencode($benvenuto);
         file_get_contents($sendto);
-        
+    }elseif(strpos($message_text,'/radio')!==FALSE){
+        $id = substr($message_text,6);
+        if ($id == 'all') {
+            $url_radio = 'https://api.jamendo.com/v3.0/radios/?client_id='.CLIENT_ID_J.'&format=jsonpretty&limit=30';
+            $result = file_get_contents($url_radio);
+            $update = json_decode($result, true);
+            $res = $update['results'];
+            foreach ($res as $track) {
+                $sendto =API_URL."sendmessage?chat_id=".$chatID."&text=".urlencode('/radio'.$track['name']);
+                file_get_contents($sendto);
+                
+            }
+        } else {
+            $url_radio = 'https://api.jamendo.com/v3.0/radios/stream/?client_id='.CLIENT_ID_J.'&format=jsonpretty&name='.$id;
+            $result = file_get_contents($url_radio);
+            $update = json_decode($result, true);
+            $res = $update['results'];
+            
+            $sendto =API_URL."sendmessage?chat_id=".$chatID."&text=".urlencode($res[0]['dispname']);
+            file_get_contents($sendto);
+            
+            $sendto =API_URL."sendPhoto?chat_id=".$chatID."&photo=".urlencode($res[0]['playingnow']['track_image']);
+            file_get_contents($sendto);
+            
+            $name = $res[0]['playingnow']['track_name'].' - '.$res[0]['playingnow']['artist_name'];
+            
+            $url_track = 'https://api.jamendo.com/v3.0/albums/tracks/?client_id='.CLIENT_ID_J.'&track_id='.$res[0]['playingnow']['track_id'];
+            $result = file_get_contents($url_track);
+            $update = json_decode($result, true);
+            $res = $update['results'][0];
+            
+            $sendto =API_URL."sendmessage?chat_id=".$chatID."&text=".urlencode($name.chr(10).$res["tracks"][0]['audio']);
+            file_get_contents($sendto);
+        }
+        die();    
     } else {
         if(strpos($message_text,'/info')!==FALSE) {
             
